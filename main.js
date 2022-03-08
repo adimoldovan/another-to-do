@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, shell } = require("electron");
 const path = require("path");
 const isDev = require('electron-is-dev');
 
@@ -25,7 +25,17 @@ const createWindow = () => {
   mainWindow.loadFile("public/index.html");
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+  if(isDev) {
+    mainWindow.webContents.openDevTools()
+  }
+
+  // Open links in OSs default browser instead of Electron
+  mainWindow.webContents.on('new-window', (event, url) => {
+    // stop Electron from opening another BrowserWindow
+    event.preventDefault()
+    // open the url in the default system browser
+    shell.openExternal(url)
+  })
 };
 
 // This method will be called when Electron has finished

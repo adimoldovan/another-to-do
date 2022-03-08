@@ -66,6 +66,7 @@
     const hostname = new URL(url).hostname;
     return hostname.replace("www.", "");
   }
+
 </script>
 
 <main>
