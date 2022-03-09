@@ -37,22 +37,27 @@
     console.log(`id: ${targetItemId}, prio: ${targetItemPriority}`)
 
     const previousItem = await db.tasks.where('priority').below(targetItemPriority).last();
+    let lowerPriority = 0
+
+    if(previousItem) {
+      lowerPriority = previousItem.priority
+    }
 
     // item dropped to same position, nothing to do
-    if(parseInt(targetItemId) === parseInt(draggedItemId)) {
+    if(previousItem && (parseInt(targetItemId) === parseInt(draggedItemId))) {
       console.log('same order, nothing to do')
       return;
     }
 
     // item dragged over the next one, nothing to do
-    if(parseInt(previousItem.id) === parseInt(draggedItemId)) {
+    if(previousItem && (parseInt(previousItem.id) === parseInt(draggedItemId))) {
       console.log('same order, nothing to do')
       return;
     }
 
-    const newPriority = previousItem.priority + (targetItemPriority - previousItem.priority)/2
+    const newPriority = lowerPriority + (targetItemPriority - lowerPriority)/2
 
-    console.log(`${previousItem.priority} | ${newPriority} | ${targetItemPriority}`)
+    console.log(`${lowerPriority} | ${newPriority} | ${targetItemPriority}`)
 
     db.tasks.update(parseInt(draggedItemId), {priority: newPriority}).then(function (updated) {
       if (updated)
@@ -79,7 +84,7 @@
     console.log("form submit");
     if (currentItem.id) {
       console.log(`update item ${currentItem.id}`);
-      if(currentItem.priority === 0) {
+      if(parseInt(currentItem.priority) === 0) {
         currentItem.priority = currentItem.id
       }
       db.tasks.update(currentItem.id, currentItem);
@@ -134,7 +139,7 @@
            on:dragenter={() => hovering = index}
       >
         <div class="item-content">
-          <div>{@html item.name}</div>
+          <div>{item.id}({item.priority}){@html item.name}</div>
           <div class="task-urls">
             {#each item.urls || [] as url}
               <a target="_blank" title={url} class="task-url" href={url}
