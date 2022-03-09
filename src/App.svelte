@@ -1,12 +1,12 @@
 <script xmlns="http://www.w3.org/1999/html">
-  import {format} from "date-fns";
-  import {db} from "./db";
-  import {liveQuery} from "dexie";
+  import { format } from "date-fns";
+  import { db } from "./db";
+  import { liveQuery } from "dexie";
 
   let now = new Date();
 
   let openItems = liveQuery(async () => {
-    let tasks = await db.tasks.orderBy('priority').toArray();
+    let tasks = await db.tasks.orderBy("priority").toArray();
 
     for (const task of tasks) {
       const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -29,86 +29,120 @@
 
   let hovering = false;
   const drop = async (event, targetItemId, targetItemPriority) => {
-    event.dataTransfer.dropEffect = 'move'
-    const draggedItemId = event.dataTransfer.getData("id")
-    const draggedItemPriority = event.dataTransfer.getData("priority")
+    event.dataTransfer.dropEffect = "move";
+    const draggedItemId = event.dataTransfer.getData("id");
 
-    console.log(`id: ${draggedItemId}, prio: ${draggedItemPriority}`)
-    console.log(`id: ${targetItemId}, prio: ${targetItemPriority}`)
+    const previousItem = await db.tasks
+      .where("priority")
+      .below(targetItemPriority)
+      .last();
+    let lowerPriority = 0;
 
-    const previousItem = await db.tasks.where('priority').below(targetItemPriority).last();
-    let lowerPriority = 0
-
-    if(previousItem) {
-      lowerPriority = previousItem.priority
+    if (previousItem) {
+      lowerPriority = previousItem.priority;
     }
 
     // item dropped to same position, nothing to do
-    if(previousItem && (parseInt(targetItemId) === parseInt(draggedItemId))) {
-      console.log('same order, nothing to do')
+    if (previousItem && parseInt(targetItemId) === parseInt(draggedItemId)) {
+      console.log("Same order, nothing to do");
       return;
     }
 
     // item dragged over the next one, nothing to do
-    if(previousItem && (parseInt(previousItem.id) === parseInt(draggedItemId))) {
-      console.log('same order, nothing to do')
+    if (previousItem && parseInt(previousItem.id) === parseInt(draggedItemId)) {
+      console.log("Same order, nothing to do");
       return;
     }
 
-    const newPriority = lowerPriority + (targetItemPriority - lowerPriority)/2
+    const newPriority =
+      lowerPriority + (targetItemPriority - lowerPriority) / 2;
 
-    console.log(`${lowerPriority} | ${newPriority} | ${targetItemPriority}`)
+    console.log(`${lowerPriority} | ${newPriority} | ${targetItemPriority}`);
 
-    db.tasks.update(parseInt(draggedItemId), {priority: newPriority}).then(function (updated) {
-      if (updated)
-        console.log ("Item was updated");
-      else
-        console.log ("Item was not updated");
-    });
+    db.tasks
+      .update(parseInt(draggedItemId), { priority: newPriority })
+      .then(function (updated) {
+        if (updated) console.log("Item was updated");
+        else console.log("Item was not updated");
+      });
 
-    hovering = null
-  }
+    hovering = null;
+  };
 
-  const dragstart = (event, id, priority) => {
-    event.dataTransfer.effectAllowed = 'move';
-    event.dataTransfer.dropEffect = 'move';
+  const dragstart = (event, id) => {
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.dropEffect = "move";
     event.dataTransfer.setData("id", id);
-    event.dataTransfer.setData("priority", priority);
-  }
+  };
 
   let noOfItems = liveQuery(() => db.tasks.count());
 
   let currentItem = emptyItem();
 
-  function submitForm() {
-    console.log("form submit");
+  async function submitForm() {
     if (currentItem.id) {
-      console.log(`update item ${currentItem.id}`);
-      if(parseInt(currentItem.priority) === 0) {
-        currentItem.priority = currentItem.id
+      if (parseFloat(currentItem.priority) * 10000 === 0) {
+        currentItem.priority = currentItem.id;
       }
-      db.tasks.update(currentItem.id, currentItem);
+      db.tasks.update(currentItem.id, currentItem).then(function (updated) {
+        if (updated) {
+          console.log(`Item ${currentItem.id} was updated`);
+        } else {
+          console.log(`Item ${currentItem.id} was NOT updated`);
+        }
+      });
     } else {
-      console.log("add new item");
-      db.tasks.add(currentItem);
+      // get max priority
+      const lastItem = await db.tasks.orderBy("priority").last();
+
+      if (lastItem) {
+        currentItem.priority = lastItem.priority + 1;
+      } else {
+        currentItem.priority = 1;
+      }
+
+      db.tasks.add(currentItem).then(function (added) {
+        if (added) console.log("Item was added");
+        else console.log("Item was NOT added");
+      });
     }
 
+    closeModal();
     currentItem = emptyItem();
   }
 
   function emptyItem() {
-    return { name: "", priority: 0 };
+    return { name: "", priority: 1000 };
   }
 
   function deleteItem(itemId) {
-    console.log(`deleting item ${itemId}`);
-    db.tasks.where("id").equals(itemId).delete();
+    db.tasks
+      .where("id")
+      .equals(itemId)
+      .delete()
+      .then(function (deleted) {
+        if (deleted) {
+          console.log(`Deleted item ${itemId}`);
+        } else {
+          console.log(`Item ${itemId} was NOT deleted!`);
+        }
+      });
   }
 
   async function editItem(itemId) {
-    console.log(`editing item ${itemId}`);
+    console.log(`Editing item ${itemId}`);
     currentItem = await db.tasks.where("id").equals(itemId).first();
-    console.log(currentItem);
+    showModal()
+  }
+
+  function showModal() {
+    let modal = document.getElementById("form-container");
+    modal.style.display = "block";
+  }
+
+  function closeModal() {
+    let modal = document.getElementById("form-container");
+    modal.style.display = "none";
   }
 
   function getUrlHost(url) {
@@ -118,7 +152,6 @@
     const hostname = new URL(url).hostname;
     return hostname.replace("www.", "");
   }
-
 </script>
 
 <main>
@@ -127,16 +160,22 @@
     {format(now, "MMM")}
   </h1>
   <div class="items">
-    <small class="count"
-      >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
-    >
+    <div class="top-actions">
+    <img
+    class="btn action-btn add-btn"
+    src="img/add.svg"
+    on:click={() => showModal()}
+    alt="add"
+  />
+    </div>
     {#each $openItems || [] as item, index (item.id)}
-      <div class="item"
-           draggable=true
-           on:dragstart={event => dragstart(event, item.id, item.priority)}
-           on:drop|preventDefault={event => drop(event, item.id, item.priority)}
-           ondragover="return false"
-           on:dragenter={() => hovering = index}
+      <div
+        class="item"
+        draggable="true"
+        on:dragstart={(event) => dragstart(event, item.id)}
+        on:drop|preventDefault={(event) => drop(event, item.id, item.priority)}
+        ondragover="return false"
+        on:dragenter={() => (hovering = index)}
       >
         <div class="item-content">
           <div>{@html item.name}</div>
@@ -165,16 +204,24 @@
       </div>
     {/each}
   </div>
-  <form on:submit|preventDefault={submitForm}>
-    <textarea placeholder="buy milk" bind:value={currentItem.name}></textarea>
-    <input type="hidden" bind:value={currentItem.id} />
-    <img
-      class="btn action-btn add-btn"
-      src="img/right-arrow.svg"
-      on:click|preventDefault={submitForm}
-      alt="add"
-    />
-  </form>
+  <small class="count"
+  >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
+  >
+  <div id="form-container">
+    <div class="modal-content">
+      <span class="close" on:click={() => closeModal()}>&times;</span>
+      <form on:submit|preventDefault={submitForm}>
+        <textarea placeholder="buy milk" bind:value={currentItem.name} />
+        <input type="hidden" bind:value={currentItem.id} />
+        <img
+          class="btn action-btn save-btn"
+          src="img/right-arrow.svg"
+          on:click|preventDefault={submitForm}
+          alt="add"
+        />
+      </form>
+    </div>
+  </div>
 </main>
 
 <style>
@@ -182,7 +229,6 @@
     text-align: center;
     padding: 1em;
     margin: 0 auto;
-    /*background-color: var(--bg-color-secondary)*/
   }
 
   h1.today {
@@ -216,6 +262,37 @@
     text-align: left;
   }
 
+  #form-container {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: var(--bg-color);
+  }
+
+  .modal-content {
+      padding: 20px;
+      margin: auto;
+      width: 80%;
+      height: 80%
+  }
+
+  .close {
+      color: var(--fg-color);
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+      cursor: pointer;
+  }
+
   form {
     display: flex;
     justify-content: center;
@@ -223,19 +300,18 @@
     align-items: center;
     margin-top: 10px;
     width: 100%;
+    height: 100%;
   }
 
   textarea {
-    /*margin: 0 0 10px 0;*/
     padding: 20px 70px 20px 20px;
     width: 70%;
-    height: 70px;
+    height: 70%;
     background: var(--bg-color-secondary);
     border: none;
     border-radius: 3px;
     box-sizing: border-box;
     color: var(--fg-color);
-    /*font-size: $item-font-size;*/
     outline: none;
   }
 
@@ -247,12 +323,16 @@
     display: inline-grid;
   }
 
+  .top-actions {
+      text-align: right;
+      padding-right: 24px;
+  }
+
   .btn {
     padding: 5px;
     border-radius: 5px;
     border: none;
     color: #acbac7;
-    /*background-color: #22272d;*/
     background-color: transparent;
     background-size: 100% 100%;
   }
@@ -264,7 +344,12 @@
       brightness(84%) contrast(90%);
   }
 
-  .add-btn {
+  .add-btn:hover {
+      filter: invert(52%) sepia(11%) saturate(1628%) hue-rotate(46deg)
+      brightness(102%) contrast(87%);
+  }
+
+  .save-btn {
     width: 48px;
     height: 48px;
     margin-left: 10px;
