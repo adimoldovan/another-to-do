@@ -133,7 +133,7 @@
            ondragover="return false"
            on:dragenter={() => hovering = index}
       >
-        <div>
+        <div class="item-content">
           <div>{@html item.name}</div>
           <div class="task-urls">
             {#each item.urls || [] as url}
@@ -143,7 +143,7 @@
             {/each}
           </div>
         </div>
-        <div>
+        <div class="item-actions">
           <img
             class="btn action-btn edit-btn"
             src="img/edit.svg"
@@ -234,6 +234,14 @@
     outline: none;
   }
 
+  .item-content {
+    display: inline-grid;
+  }
+
+  .item-actions {
+    display: inline-grid;
+  }
+
   .btn {
     padding: 5px;
     border-radius: 5px;
@@ -274,7 +282,15 @@
   }
 
   a.task-url {
-    padding: 5px;
+    display: inline-grid;
+    padding: 10px;
     margin-right: 10px;
+    background-color: var(--bg-color);
+    border-radius: 10px;
+  }
+
+  a.task-url:hover {
+    text-decoration: none;
+    background-color: var(--fg-color);
   }
 </style>
