@@ -1,12 +1,12 @@
 <script xmlns="http://www.w3.org/1999/html">
-  import { format } from "date-fns";
-  import { db } from "./db";
-  import { liveQuery } from "dexie";
+  import {format} from "date-fns";
+  import {db} from "./db";
+  import {liveQuery} from "dexie";
 
   let now = new Date();
 
   let items = liveQuery(async () => {
-    const tasks = await db.tasks.toArray();
+    let tasks = await db.tasks.orderBy('priority').toArray();
 
     for (const task of tasks) {
       const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -27,6 +27,50 @@
     return tasks;
   });
 
+  let hovering = false;
+  const drop = async (event, targetItemId, targetItemPriority) => {
+    event.dataTransfer.dropEffect = 'move'
+    const draggedItemId = event.dataTransfer.getData("id")
+    const draggedItemPriority = event.dataTransfer.getData("priority")
+
+    console.log(`id: ${draggedItemId}, prio: ${draggedItemPriority}`)
+    console.log(`id: ${targetItemId}, prio: ${targetItemPriority}`)
+
+    const previousItem = await db.tasks.where('priority').below(targetItemPriority).last();
+
+    // item dropped to same position, nothing to do
+    if(parseInt(targetItemId) === parseInt(draggedItemId)) {
+      console.log('same order, nothing to do')
+      return;
+    }
+
+    // item dragged over the next one, nothing to do
+    if(parseInt(previousItem.id) === parseInt(draggedItemId)) {
+      console.log('same order, nothing to do')
+      return;
+    }
+
+    const newPriority = previousItem.priority + (targetItemPriority - previousItem.priority)/2
+
+    console.log(`${previousItem.priority} | ${newPriority} | ${targetItemPriority}`)
+
+    db.tasks.update(parseInt(draggedItemId), {priority: newPriority}).then(function (updated) {
+      if (updated)
+        console.log ("Item was updated");
+      else
+        console.log ("Item was not updated");
+    });
+
+    hovering = null
+  }
+
+  const dragstart = (event, id, priority) => {
+    event.dataTransfer.effectAllowed = 'move';
+    event.dataTransfer.dropEffect = 'move';
+    event.dataTransfer.setData("id", id);
+    event.dataTransfer.setData("priority", priority);
+  }
+
   let noOfItems = liveQuery(() => db.tasks.count());
 
   let currentItem = emptyItem();
@@ -35,6 +79,9 @@
     console.log("form submit");
     if (currentItem.id) {
       console.log(`update item ${currentItem.id}`);
+      if(currentItem.priority === 0) {
+        currentItem.priority = currentItem.id
+      }
       db.tasks.update(currentItem.id, currentItem);
     } else {
       console.log("add new item");
@@ -45,7 +92,7 @@
   }
 
   function emptyItem() {
-    return { name: "" };
+    return { name: "", priority: 0 };
   }
 
   function deleteItem(itemId) {
@@ -78,8 +125,14 @@
     <small class="count"
       >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
     >
-    {#each $items || [] as item (item.id)}
-      <div class="item">
+    {#each $items || [] as item, index (item.id)}
+      <div class="item"
+           draggable=true
+           on:dragstart={event => dragstart(event, item.id, item.priority)}
+           on:drop|preventDefault={event => drop(event, item.id, item.priority)}
+           ondragover="return false"
+           on:dragenter={() => hovering = index}
+      >
         <div>
           <div>{@html item.name}</div>
           <div class="task-urls">
