@@ -139,7 +139,7 @@
            on:dragenter={() => hovering = index}
       >
         <div class="item-content">
-          <div>{item.id}({item.priority}){@html item.name}</div>
+          <div>{@html item.name}</div>
           <div class="task-urls">
             {#each item.urls || [] as url}
               <a target="_blank" title={url} class="task-url" href={url}
