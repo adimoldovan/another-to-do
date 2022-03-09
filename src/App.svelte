@@ -342,6 +342,7 @@
     height: 24px;
     filter: invert(87%) sepia(10%) saturate(366%) hue-rotate(167deg)
       brightness(84%) contrast(90%);
+      cursor: pointer;
   }
 
   .add-btn:hover {
@@ -381,6 +382,6 @@
 
   a.task-url:hover {
     text-decoration: none;
-    background-color: var(--fg-color);
+    opacity: 70%
   }
 </style>
