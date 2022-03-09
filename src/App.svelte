@@ -5,7 +5,7 @@
 
   let now = new Date();
 
-  let items = liveQuery(async () => {
+  let openItems = liveQuery(async () => {
     let tasks = await db.tasks.orderBy('priority').toArray();
 
     for (const task of tasks) {
@@ -125,7 +125,7 @@
     <small class="count"
       >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
     >
-    {#each $items || [] as item, index (item.id)}
+    {#each $openItems || [] as item, index (item.id)}
       <div class="item"
            draggable=true
            on:dragstart={event => dragstart(event, item.id, item.priority)}
@@ -206,7 +206,7 @@
     background-color: var(--bg-color-secondary);
     border-radius: 6px;
     border: none;
-    padding: 10px;
+    padding: 15px;
     white-space: pre-line;
     text-align: left;
   }
