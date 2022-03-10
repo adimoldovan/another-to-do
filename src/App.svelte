@@ -187,14 +187,14 @@
         on:drop|preventDefault={(event) => drop(event, item.id, item.priority)}
         ondragover="return false"
         on:dragenter={() => (hovering = index)}
+        on:dblclick="{()=>editItem(item.id)}"
       >
         <div class="item-content">
           <div>{@html item.name}</div>
           <div class="task-urls">
             {#each item.urls || [] as url}
               <a target="_blank" title={url} class="task-url" href={url}
-                >{getUrlHost(url)}</a
-              >
+                >{getUrlHost(url)}</a>
             {/each}
           </div>
         </div>
@@ -245,10 +245,11 @@
   h1.today {
     margin-top: 0;
     text-align: left;
-    color: #ff3e00;
+    color: var(--fg-color);
     text-transform: uppercase;
     font-size: 2.5rem;
-    font-weight: 100;
+    font-weight: 200;
+      border-bottom: 1px solid var(--border-color);
   }
 
   .count {
@@ -256,7 +257,7 @@
   }
 
   div.items {
-    border-bottom: 1px solid var(--border-color);
+    /*border-bottom: 1px solid var(--border-color);*/
     padding-bottom: 2vh;
   }
 
@@ -265,9 +266,9 @@
     justify-content: space-between;
     align-items: center;
     margin: 5px;
-    background-color: var(--bg-color-secondary);
+    /*background-color: var(--bg-color-secondary);*/
     border-radius: 6px;
-    border: none;
+      border-bottom: 1px solid var(--border-color);
     padding: 15px;
     white-space: pre-line;
     text-align: left;
@@ -328,6 +329,7 @@
 
   .item-content {
     display: inline-grid;
+      padding: 10px;
   }
 
   .item-actions {
@@ -380,19 +382,19 @@
   }
 
   .task-urls {
-    padding: 15px;
+    padding-top: 15px;
   }
 
   a.task-url {
     display: inline-grid;
     padding: 10px;
     margin-right: 10px;
-    background-color: var(--bg-color);
+    background-color: var(--bg-color-secondary);
     border-radius: 10px;
   }
 
   a.task-url:hover {
     text-decoration: none;
-    opacity: 70%
+      background-color: #000;
   }
 </style>
