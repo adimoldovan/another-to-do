@@ -9,7 +9,7 @@
   onMount(() => {
     const interval = setInterval(() => {
       now = new Date();
-    }, 3600*1000);
+    }, 3600 * 1000);
 
     return () => {
       clearInterval(interval);
@@ -38,8 +38,9 @@
     return tasks;
   });
 
-  let hovering = false;
-  const drop = async (event, targetItemId, targetItemPriority) => {
+  const drop = async (event, targetItemId, targetItemPriority, index) => {
+    dropArrow(index, false);
+
     event.dataTransfer.dropEffect = "move";
     const draggedItemId = event.dataTransfer.getData("id");
 
@@ -76,14 +77,29 @@
         if (updated) console.log("Item was updated");
         else console.log("Item was not updated");
       });
-
-    hovering = null;
   };
 
   const dragstart = (event, id) => {
     event.dataTransfer.effectAllowed = "move";
     event.dataTransfer.dropEffect = "move";
     event.dataTransfer.setData("id", id);
+  };
+
+  const dragover = (index) => {
+    dropArrow(index, true);
+  };
+
+  const dragleave = (index) => {
+    dropArrow(index, false);
+  };
+
+  const dropArrow = (index, show) => {
+    const dropIndicator = document.querySelector(`div#arrow-${index}`);
+    if (show) {
+      dropIndicator.style.display = "block";
+    } else {
+      dropIndicator.style.display = "none";
+    }
   };
 
   let noOfItems = liveQuery(() => db.tasks.count());
@@ -143,7 +159,7 @@
   async function editItem(itemId) {
     console.log(`Editing item ${itemId}`);
     currentItem = await db.tasks.where("id").equals(itemId).first();
-    showModal()
+    showModal();
   }
 
   function showModal() {
@@ -172,51 +188,57 @@
   </h1>
   <div class="items">
     <div class="top-actions">
-    <img
-    class="btn action-btn add-btn"
-    src="img/add.svg"
-    on:click={() => showModal()}
-    alt="add"
-  />
+      <img
+        class="btn action-btn add-btn"
+        src="img/add.svg"
+        on:click={() => showModal()}
+        alt="add"
+      />
     </div>
     {#each $openItems || [] as item, index (item.id)}
       <div
         class="item"
         draggable="true"
         on:dragstart={(event) => dragstart(event, item.id)}
-        on:drop|preventDefault={(event) => drop(event, item.id, item.priority)}
+        on:drop|preventDefault={(event) =>
+          drop(event, item.id, item.priority, index)}
         ondragover="return false"
-        on:dragenter={() => (hovering = index)}
-        on:dblclick="{()=>editItem(item.id)}"
+        on:dragover={() => dragover(index)}
+        on:dragleave={() => dragleave(index)}
+        on:dblclick={() => editItem(item.id)}
       >
-        <div class="item-content">
-          <div>{@html item.name}</div>
-          <div class="task-urls">
-            {#each item.urls || [] as url}
-              <a target="_blank" title={url} class="task-url" href={url}
-                >{getUrlHost(url)}</a>
-            {/each}
+        <div id="arrow-{index}" class="arrow arrow-up">&nbsp;</div>
+        <div class="item-row">
+          <div class="item-content">
+            <div>{@html item.name}</div>
+            <div class="task-urls">
+              {#each item.urls || [] as url}
+                <a target="_blank" title={url} class="task-url" href={url}
+                  >{getUrlHost(url)}</a
+                >
+              {/each}
+            </div>
           </div>
-        </div>
-        <div class="item-actions">
-          <img
-            class="btn action-btn edit-btn"
-            src="img/edit.svg"
-            on:click={() => editItem(item.id)}
-            alt="edit"
-          />
-          <img
-            class="btn action-btn delete-btn"
-            src="img/close.svg"
-            on:click={() => deleteItem(item.id)}
-            alt="delete"
-          />
+          <div class="item-actions">
+            <img
+              class="btn action-btn edit-btn"
+              src="img/edit.svg"
+              on:click={() => editItem(item.id)}
+              alt="edit"
+            />
+            <img
+              class="btn action-btn delete-btn"
+              src="img/close.svg"
+              on:click={() => deleteItem(item.id)}
+              alt="delete"
+            />
+          </div>
         </div>
       </div>
     {/each}
   </div>
   <small class="count"
-  >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
+    >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
   >
   <div id="form-container">
     <div class="modal-content">
@@ -249,60 +271,96 @@
     text-transform: uppercase;
     font-size: 2.5rem;
     font-weight: 200;
-      border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
   }
 
   .count {
     text-align: left;
   }
 
-  div.items {
+  .items {
     /*border-bottom: 1px solid var(--border-color);*/
     padding-bottom: 2vh;
   }
 
-  div.item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .item {
     margin: 5px;
-    /*background-color: var(--bg-color-secondary);*/
     border-radius: 6px;
-      border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
     padding: 15px;
     white-space: pre-line;
     text-align: left;
   }
 
+  .item-row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+
+  .item-content {
+    float: left;
+    text-align: left;
+    width: 75%;
+  }
+
+  .item-actions {
+    float: left;
+    text-align: right;
+    width: 25%;
+  }
+
+  .top-actions {
+    text-align: right;
+    padding-right: 24px;
+  }
+
+  .arrow {
+    display: none;
+    position: relative;
+  }
+
+  .arrow-up:before {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    content: "";
+    border-left: 25px solid transparent;
+    border-right: 25px solid transparent;
+    border-bottom: 20px solid var(--fg-color);
+  }
+
   #form-container {
-      display: none;
-      position: fixed;
-      z-index: 1;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto;
-      background-color: var(--bg-color);
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--bg-color);
   }
 
   .modal-content {
-      padding: 20px;
-      margin: auto;
-      width: 80%;
-      height: 80%
+    padding: 20px;
+    margin: auto;
+    width: 80%;
+    height: 80%;
   }
 
   .close {
-      color: var(--fg-color);
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
+    color: var(--fg-color);
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
   }
 
   .close:hover,
   .close:focus {
-      cursor: pointer;
+    cursor: pointer;
   }
 
   form {
@@ -327,20 +385,6 @@
     outline: none;
   }
 
-  .item-content {
-    display: inline-grid;
-      padding: 10px;
-  }
-
-  .item-actions {
-    display: inline-grid;
-  }
-
-  .top-actions {
-      text-align: right;
-      padding-right: 24px;
-  }
-
   .btn {
     padding: 5px;
     border-radius: 5px;
@@ -355,11 +399,11 @@
     height: 24px;
     filter: invert(87%) sepia(10%) saturate(366%) hue-rotate(167deg)
       brightness(84%) contrast(90%);
-      cursor: pointer;
+    cursor: pointer;
   }
 
   .add-btn:hover {
-      filter: invert(52%) sepia(11%) saturate(1628%) hue-rotate(46deg)
+    filter: invert(52%) sepia(11%) saturate(1628%) hue-rotate(46deg)
       brightness(102%) contrast(87%);
   }
 
@@ -395,6 +439,6 @@
 
   a.task-url:hover {
     text-decoration: none;
-      background-color: #000;
+    background-color: #000;
   }
 </style>
