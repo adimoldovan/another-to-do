@@ -39,7 +39,7 @@
   });
 
   const drop = async (event, targetItemId, targetItemPriority, index) => {
-    dropArrow(index, false);
+    dropIndicator(index, false);
 
     event.dataTransfer.dropEffect = "move";
     const draggedItemId = event.dataTransfer.getData("id");
@@ -86,19 +86,22 @@
   };
 
   const dragover = (index) => {
-    dropArrow(index, true);
+    dropIndicator(index, true);
   };
 
   const dragleave = (index) => {
-    dropArrow(index, false);
+    dropIndicator(index, false);
   };
 
-  const dropArrow = (index, show) => {
-    const dropIndicator = document.querySelector(`div#arrow-${index}`);
+  const dropIndicator = (index, show) => {
+    // const target = document.querySelector(`div#arrow-${index}`);
+    const target = document.querySelector(`div#item-${index}`);
     if (show) {
-      dropIndicator.style.display = "block";
+      // target.style.display = "block";
+      target.classList.add("allow-drop");
     } else {
-      dropIndicator.style.display = "none";
+      target.classList.remove("allow-drop");
+      // target.style.display = "none";
     }
   };
 
@@ -197,6 +200,7 @@
     </div>
     {#each $openItems || [] as item, index (item.id)}
       <div
+        id="item-{index}"
         class="item"
         draggable="true"
         on:dragstart={(event) => dragstart(event, item.id)}
@@ -207,7 +211,6 @@
         on:dragleave={() => dragleave(index)}
         on:dblclick={() => editItem(item.id)}
       >
-        <div id="arrow-{index}" class="arrow arrow-up">&nbsp;</div>
         <div class="item-row">
           <div class="item-content">
             <div>{@html item.name}</div>
@@ -279,7 +282,6 @@
   }
 
   .items {
-    /*border-bottom: 1px solid var(--border-color);*/
     padding-bottom: 2vh;
   }
 
@@ -313,23 +315,6 @@
   .top-actions {
     text-align: right;
     padding-right: 24px;
-  }
-
-  .arrow {
-    display: none;
-    position: relative;
-  }
-
-  .arrow-up:before {
-    margin: 0;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    content: "";
-    border-left: 25px solid transparent;
-    border-right: 25px solid transparent;
-    border-bottom: 20px solid var(--fg-color);
   }
 
   #form-container {
