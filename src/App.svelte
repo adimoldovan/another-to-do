@@ -2,8 +2,19 @@
   import { format } from "date-fns";
   import { db } from "./db";
   import { liveQuery } from "dexie";
+  import { onMount } from "svelte";
 
   let now = new Date();
+
+  onMount(() => {
+    const interval = setInterval(() => {
+      now = new Date();
+    }, 3600*1000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  });
 
   let openItems = liveQuery(async () => {
     let tasks = await db.tasks.orderBy("priority").toArray();
