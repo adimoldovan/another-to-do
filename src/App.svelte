@@ -5,6 +5,7 @@
   import { onMount } from "svelte";
 
   let now = new Date();
+  export let complete = 0;
 
   onMount(() => {
     const interval = setInterval(() => {
@@ -16,8 +17,8 @@
     };
   });
 
-  let openItems = liveQuery(async () => {
-    let tasks = await db.tasks.orderBy("priority").toArray();
+  $: openItems = liveQuery(async () => {
+    let tasks = await db.tasks.where('complete').equals(complete).sortBy('priority');
 
     for (const task of tasks) {
       const urlRegex = /(((https?:\/\/)|(www\.))[^\s]+)/g;
@@ -159,6 +160,16 @@
       });
   }
 
+  async function updateItemStatus(item) {
+    db.tasks.update(item.id, { 'complete': item.complete === 0 ? 1 : 0 }).then(function(updated) {
+      if (updated) {
+        console.log(`Item ${item.id} was updated`);
+      } else {
+        console.log(`Item ${item.id} was NOT updated`);
+      }
+    });
+  }
+
   async function editItem(itemId) {
     console.log(`Editing item ${itemId}`);
     currentItem = await db.tasks.where("id").equals(itemId).first();
@@ -191,12 +202,7 @@
   </h1>
   <div class="items">
     <div class="top-actions">
-      <img
-        class="btn action-btn add-btn"
-        src="img/add.svg"
-        on:click={() => showModal()}
-        alt="add"
-      />
+      <a href={'#'} class="btn action-btn add-btn" on:click={() => showModal()}>&oplus;</a>
     </div>
     {#each $openItems || [] as item, index (item.id)}
       <div
@@ -223,207 +229,29 @@
             </div>
           </div>
           <div class="item-actions">
-            <img
-              class="btn action-btn edit-btn"
-              src="img/edit.svg"
-              on:click={() => editItem(item.id)}
-              alt="edit"
-            />
-            <img
-              class="btn action-btn delete-btn"
-              src="img/close.svg"
-              on:click={() => deleteItem(item.id)}
-              alt="delete"
-            />
+            <a href={'#'} class="btn action-btn done-btn" on:click={() => updateItemStatus(item)}>&check;</a>
+            <a href={'#'} class="btn action-btn delete-btn" on:click={() => deleteItem(item.id)}>&cross;</a>
           </div>
         </div>
       </div>
     {/each}
   </div>
+  <small
+  ><a href={'#'} on:click={() => complete = (complete === 0 ?  1 :  0)}>show {complete === 0 ? "completed" : "open"} items</a></small
+  ><br/>
   <small class="count"
-    >{$noOfItems == null ? "checking..." : $noOfItems + " items"}</small
+    >{$noOfItems == null ? "checking..." : $noOfItems + " total items"}</small
   >
+
   <div id="form-container">
     <div class="modal-content">
       <span class="close" on:click={() => closeModal()}>&times;</span>
       <form on:submit|preventDefault={submitForm}>
         <textarea placeholder="buy milk" bind:value={currentItem.name} />
         <input type="hidden" bind:value={currentItem.id} />
-        <img
-          class="btn action-btn save-btn"
-          src="img/right-arrow.svg"
-          on:click|preventDefault={submitForm}
-          alt="add"
-        />
+
+        <a href={'#'} class="btn action-btn save-btn" on:click|preventDefault={submitForm}>&darr;</a>
       </form>
     </div>
   </div>
 </main>
-
-<style>
-  main {
-    text-align: center;
-    padding: 1em;
-    margin: 0 auto;
-  }
-
-  h1.today {
-    margin-top: 0;
-    text-align: left;
-    color: var(--fg-color);
-    text-transform: uppercase;
-    font-size: 2.5rem;
-    font-weight: 200;
-    border-bottom: 1px solid var(--border-color);
-  }
-
-  .count {
-    text-align: left;
-  }
-
-  .items {
-    padding-bottom: 2vh;
-  }
-
-  .item {
-    margin: 5px;
-    border-radius: 6px;
-    border-bottom: 1px solid var(--border-color);
-    padding: 15px;
-    white-space: pre-line;
-    text-align: left;
-  }
-
-  .item-row:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-  .item-content {
-    float: left;
-    text-align: left;
-    width: 75%;
-  }
-
-  .item-actions {
-    float: left;
-    text-align: right;
-    width: 25%;
-  }
-
-  .top-actions {
-    text-align: right;
-    padding-right: 24px;
-  }
-
-  #form-container {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: var(--bg-color);
-  }
-
-  .modal-content {
-    padding: 20px;
-    margin: auto;
-    width: 80%;
-    height: 80%;
-  }
-
-  .close {
-    color: var(--fg-color);
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    cursor: pointer;
-  }
-
-  form {
-    display: flex;
-    justify-content: center;
-    flex-flow: row;
-    align-items: center;
-    margin-top: 10px;
-    width: 100%;
-    height: 100%;
-  }
-
-  textarea {
-    padding: 20px 70px 20px 20px;
-    width: 70%;
-    height: 70%;
-    background: var(--bg-color-secondary);
-    border: none;
-    border-radius: 3px;
-    box-sizing: border-box;
-    color: var(--fg-color);
-    outline: none;
-  }
-
-  .btn {
-    padding: 5px;
-    border-radius: 5px;
-    border: none;
-    color: #acbac7;
-    background-color: transparent;
-    background-size: 100% 100%;
-  }
-
-  .action-btn {
-    width: 24px;
-    height: 24px;
-    filter: invert(87%) sepia(10%) saturate(366%) hue-rotate(167deg)
-      brightness(84%) contrast(90%);
-    cursor: pointer;
-  }
-
-  .add-btn:hover {
-    filter: invert(52%) sepia(11%) saturate(1628%) hue-rotate(46deg)
-      brightness(102%) contrast(87%);
-  }
-
-  .save-btn {
-    width: 48px;
-    height: 48px;
-    margin-left: 10px;
-    filter: invert(52%) sepia(11%) saturate(1628%) hue-rotate(46deg)
-      brightness(102%) contrast(87%);
-  }
-
-  .edit-btn:hover {
-    filter: invert(82%) sepia(52%) saturate(329%) hue-rotate(7deg)
-      brightness(97%) contrast(89%);
-  }
-
-  .delete-btn:hover {
-    filter: invert(35%) sepia(60%) saturate(5270%) hue-rotate(0deg)
-      brightness(100%) contrast(108%);
-  }
-
-  .task-urls {
-    padding-top: 15px;
-  }
-
-  a.task-url {
-    display: inline-grid;
-    padding: 10px;
-    margin-right: 10px;
-    background-color: var(--bg-color-secondary);
-    border-radius: 10px;
-  }
-
-  a.task-url:hover {
-    text-decoration: none;
-    background-color: #000;
-  }
-</style>
