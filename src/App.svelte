@@ -139,7 +139,6 @@
     }
 
     closeModal();
-    currentItem = emptyItem();
   }
 
   function emptyItem() {
@@ -184,6 +183,7 @@
   function closeModal() {
     let modal = document.getElementById("form-container");
     modal.style.display = "none";
+    currentItem = emptyItem();
   }
 
   function getUrlHost(url) {
