@@ -142,7 +142,7 @@
   }
 
   function emptyItem() {
-    return { name: "", priority: 1000 };
+    return { name: "", priority: 1000, complete: 0 };
   }
 
   function deleteItem(itemId) {
