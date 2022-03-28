@@ -1,5 +1,5 @@
 :root {
-  --bg-color: #2d333b;
+  --bg-color: #1b1f23;
   --fg-color: #acbac7;
   --bg-color-secondary: #22272d;
   --border-color: #444c56;
@@ -20,7 +20,6 @@ body {
   background-color: var(--bg-color);
   color: var(--fg-color);
   margin: 0;
-  padding: 8px;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -51,12 +50,12 @@ textarea {
 }
 
 .allow-drop {
-  background-color: var(--bg-color-secondary);
+  background-color: var(--bg-color);
 }
 
 main {
   text-align: center;
-  padding: 1em;
+  padding: 1vh;
   margin: 0 auto;
 }
 
@@ -75,9 +74,10 @@ h1.today {
 }
 
 .item {
-  margin: 5px;
+  background-color: var(--bg-color-secondary);
+  margin: 0.5vh;
   border-radius: 6px;
-  border-bottom: 1px solid var(--border-color);
+  /*border-bottom: 1px solid var(--border-color);*/
   padding: 15px;
   white-space: pre-line;
   text-align: left;
@@ -92,13 +92,13 @@ h1.today {
 .item-content {
   float: left;
   text-align: left;
-  width: 75%;
+  width: 95%;
 }
 
 .item-actions {
   float: left;
   text-align: right;
-  width: 25%;
+  width: 5%;
 }
 
 .top-actions {
@@ -160,11 +160,9 @@ textarea {
 }
 
 .btn {
-  padding: 5px;
   border: none;
   color: var(--fg-color);
   background-color: transparent;
-  background-size: 100% 100%;
   font-size: 2rem;
 }
 
@@ -206,6 +204,7 @@ a.task-url {
   display: inline-grid;
   padding: 10px;
   margin-right: 10px;
+  margin-bottom: 10px;
   background-color: var(--bg-color-secondary);
   border-radius: 10px;
 }
