@@ -1,8 +1,9 @@
 {
   "name": "another-to-do",
+  "type": "module",
   "version": "1.0.0",
   "description": "Yet another to do list app",
-  "main": "main.js",
+  "main": "main.cjs",
   "scripts": {
     "start": "concurrently \"npm:svelte-dev\" \"electron-forge start\"",
     "publish": "electron-forge publish",
@@ -21,8 +22,8 @@
     "@electron-forge/maker-rpm": "^7.2.0",
     "@electron-forge/maker-squirrel": "^7.2.0",
     "@electron-forge/maker-zip": "^7.2.0",
-    "@rollup/plugin-commonjs": "^17.0.0",
-    "@rollup/plugin-node-resolve": "^11.0.0",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "concurrently": "^7.0.0",
     "electron": "^17.1.1",
     "prettier": "^2.5.1",
@@ -30,7 +31,7 @@
     "rollup": "^2.3.4",
     "rollup-plugin-css-only": "^3.1.0",
     "rollup-plugin-livereload": "^2.0.0",
-    "rollup-plugin-svelte": "^7.0.0",
+    "rollup-plugin-svelte": "^7.1.6",
     "rollup-plugin-terser": "^7.0.0",
     "svelte": "^3.0.0"
   },

@@ -1,4 +1,3 @@
-// Modules to control application life and create native browser window
 const { app, BrowserWindow, shell } = require("electron");
 const path = require("path");
 const isDev = require('electron-is-dev');
@@ -17,7 +16,7 @@ const createWindow = () => {
     width: 725,
     height: 1100,
     webPreferences: {
-      preload: path.join(__dirname, "preload.js"),
+      preload: path.join(__dirname, "preload.cjs"),
     },
   });
 
