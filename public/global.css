@@ -61,7 +61,7 @@ main {
 
 h1.today {
   margin-top: 0;
-  text-align: left;
+  text-align: center;
   color: var(--fg-color);
   text-transform: uppercase;
   font-size: 2.5rem;
@@ -75,8 +75,8 @@ h1.today {
 
 .item {
   background-color: var(--bg-color-secondary);
-  margin: 0.5vh;
-  border-radius: 6px;
+  margin: 1vh;
+  border-radius: 10px;
   /*border-bottom: 1px solid var(--border-color);*/
   padding: 15px;
   white-space: pre-line;
@@ -163,7 +163,7 @@ textarea {
   border: none;
   color: var(--fg-color);
   background-color: transparent;
-  font-size: 2rem;
+  font-size: 1.5rem;
 }
 
 .action-btn {

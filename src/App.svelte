@@ -197,6 +197,12 @@
     const hostname = new URL(url).hostname;
     return hostname.replace("www.", "");
   }
+
+  function handleKeyDown(event) {
+    if (event.key === "Escape") {
+      closeModal();
+    }
+  }
 </script>
 
 <main>
@@ -204,7 +210,7 @@
     {format(now, "EEEE")}, {format(now, "d")}
     {format(now, "MMM")}
   </h1>
-  <div class="items">
+  <div class="items" role="list">
     <div class="top-actions">
       <a href={'#'} class="btn action-btn add-btn" on:click={() => showModal()}>&oplus;</a>
     </div>
@@ -213,6 +219,7 @@
         id="item-{index}"
         class="item"
         draggable="true"
+        role="listitem"
         on:dragstart={(event) => dragstart(event, item.id)}
         on:drop|preventDefault={(event) =>
           drop(event, item.id, item.priority, index)}
@@ -247,9 +254,9 @@
     >{$noOfItems == null ? "checking..." : $noOfItems + " total items"}</small
   >
 
-  <div id="form-container">
+  <div id="form-container" role="dialog">
     <div class="modal-content">
-      <span class="close" on:click={() => closeModal()}>&times;</span>
+      <span role="button" class="close" tabindex="0" on:click={() => closeModal()} on:keydown={handleKeyDown}>&times;</span>
       <form on:submit|preventDefault={submitForm}>
         <textarea placeholder="buy milk" bind:value={currentItem.name} />
         <input type="hidden" bind:value={currentItem.id} />
