@@ -1,14 +1,20 @@
-// Modules to control application life and create native browser window
-const { app, BrowserWindow, shell } = require("electron");
-const path = require("path");
-const isDev = require('electron-is-dev');
+import { app, BrowserWindow, shell } from "electron";
+import path from "path";
+import isDev from 'electron-is-dev';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Live Reload
 if(isDev) {
-  require("electron-reload")(__dirname, {
-    electron: path.join(__dirname, "node_modules", ".bin", "electron"),
-    awaitWriteFinish: true,
-  });
+  import('electron-reload').then(module => {
+    module(__dirname, {
+      electron: path.join(__dirname, "node_modules", ".bin", "electron"),
+      awaitWriteFinish: true,
+    });
+  }).catch(err => console.log(err));
 }
 
 const createWindow = () => {
