@@ -117,24 +117,28 @@
       }
       db.tasks.update(currentItem.id, currentItem).then(function (updated) {
         if (updated) {
-          console.log(`Item ${currentItem.id} was updated`);
+          console.log(`Task was updated: ${updated}`);
         } else {
-          console.log(`Item ${currentItem.id} was NOT updated`);
+          console.warn(`Task was NOT updated`);
         }
       });
     } else {
       // get max priority
-      const lastItem = await db.tasks.orderBy("priority").last();
+      const firstItem = await db.tasks.orderBy("priority").first();
 
-      if (lastItem) {
-        currentItem.priority = lastItem.priority + 1;
+      if (firstItem) {
+        currentItem.priority = firstItem.priority - 1;
       } else {
         currentItem.priority = 1;
       }
 
       db.tasks.add(currentItem).then(function (added) {
-        if (added) console.log("Item was added");
-        else console.log("Item was NOT added");
+        if (added) {
+          console.log(`Task was created: ${added}`);
+        }
+        else {
+          console.warn("Task was NOT created");
+        }
       });
     }
 
