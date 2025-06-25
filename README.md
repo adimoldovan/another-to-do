@@ -1,21 +1,34 @@
+# Another To Do app
 
-# just another to do app
+Yet another to do list app, or YATDLA, or "YATblllb... that to do app".
 
-```shell
-# Dev
-npm start
+## Recommended IDE Setup
 
+- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-# Package
-npm run package
+## Project Setup
+
+### Install
+
+```bash
+$ npm install
 ```
 
+### Development
 
-```shell
-# Create a set of icons from png
-mkdir ./assets/set.iconset
-cp ./assets/favicon.png ./assets/set.iconset/icon_512x512@2x.png
-iconutil -c icns ./assets/set.iconset
-rm -rf ./assets/set.iconset
+```bash
+$ npm run dev
+```
 
+### Build
+
+```bash
+# For windows
+$ npm run build:win
+
+# For macOS
+$ npm run build:mac
+
+# For Linux
+$ npm run build:linux
 ```
