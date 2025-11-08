@@ -11,7 +11,7 @@ export default defineConfig({
     ['html', { open: 'never' }],
     ['list']
   ],
-  use: {
+  use: {    
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
     video: 'retain-on-failure',

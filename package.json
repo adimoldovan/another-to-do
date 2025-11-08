@@ -15,7 +15,6 @@
     "make": "npm run build && electron-forge make",
     "release": "npm run build && electron-forge make",
     "test": "playwright test",
-    "test:headed": "playwright test --headed",
     "test:ui": "playwright test --ui"
   },
   "author": "Adrian Moldovan",
