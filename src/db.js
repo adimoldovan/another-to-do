@@ -2,7 +2,14 @@ import Dexie from "dexie";
 import dexieCloud from "dexie-cloud-addon";
 import { getDexieCloudUrl } from "./settings.js";
 
-export const db = new Dexie("ToDoListDatabase", { addons: [dexieCloud] });
+// Use different database names for dev/test/prod to avoid conflicts
+// Check if running in Electron packaged app via environment variable set by main process
+const isPackaged = window.electronAPI?.isPackaged ?? false;
+const isTest = import.meta.env.MODE === 'test';
+const dbName = isTest ? "ya2d-test" : (isPackaged ? "ya2d" : "ya2d-dev");
+
+export const db = new Dexie(dbName, { addons: [dexieCloud] });
+export { dbName, isPackaged, isTest };
 
 /**
  * Configure cloud sync with user's settings
@@ -37,13 +44,17 @@ export function isCloudConfigured() {
 }
 
 // Database schema
-// Note: We use auto-increment IDs for simplicity
-// Dexie Cloud will handle syncing even with auto-increment IDs
-db.version(8).stores({
-  tasks: "++id, name, priority, complete"
+// Note: Dexie Cloud requires string-based primary keys for sync
+// Changed from auto-increment (++id) to string (id) in v9
+db.version(9).stores({
+  tasks: "id, name, priority, complete"
 }).upgrade((t) => {
   return t.tasks.toCollection().modify((task) => {
     task.complete = task.complete || 0;
+    // Generate string ID for existing tasks if they don't have one
+    if (!task.id || typeof task.id === 'number') {
+      task.id = crypto.randomUUID();
+    }
   });
 });
 

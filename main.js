@@ -7,6 +7,22 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Set environment variable to indicate if app is packaged
+process.env.ELECTRON_IS_PACKAGED = app.isPackaged ? 'true' : 'false';
+
+// Use different user data paths for dev vs prod to avoid database conflicts
+// This allows running dev and prod versions simultaneously
+if (!app.isPackaged) {
+  const devUserDataPath = path.join(app.getPath('userData'), '-dev');
+  app.setPath('userData', devUserDataPath);
+  console.log('Dev mode - User data path:', devUserDataPath);
+  process.env.ELECTRON_USER_DATA_PATH = devUserDataPath;
+} else {
+  const prodUserDataPath = app.getPath('userData');
+  console.log('Production mode - User data path:', prodUserDataPath);
+  process.env.ELECTRON_USER_DATA_PATH = prodUserDataPath;
+}
+
 // Vite dev server (runs automatically with npm start)
 
 const createWindow = () => {

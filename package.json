@@ -2,7 +2,7 @@
   "name": "another-to-do",
   "type": "module",
   "version": "2.0.0",
-  "description": "Yet another to do list app",
+  "description": "ya2d - Yet another to-do app",
   "main": "main.js",
   "scripts": {
     "start": "concurrently \"npm:dev\" \"electron-forge start\"",
@@ -47,17 +47,17 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "name": "Another To Do",
-        "productName": "Another To Do",
-        "executableName": "Another To Do",
+        "name": "ya2d",
+        "productName": "ya2d",
+        "executableName": "ya2d",
         "icon": "assets/mac/icon.icns",
-        "appBundleId": "com.electron.another-to-do"
+        "appBundleId": "com.electron.ya2d"
       },
       "makers": [
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "another-to-o"
+            "name": "ya2d"
           }
         },
         {

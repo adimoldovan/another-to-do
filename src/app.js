@@ -1,5 +1,5 @@
 import { format } from 'date-fns';
-import { db, configureCloudSync } from './db.js';
+import { db, configureCloudSync, dbName, isPackaged, isTest } from './db.js';
 import { liveQuery } from 'dexie';
 import { detectAndLinkUrls, getUrlHost } from './utils/urlDetector.js';
 import { setupDragHandlers } from './utils/dragDrop.js';
@@ -23,6 +23,32 @@ function init() {
   subscribeToTaskCount();
   renderDate();
   initSyncStatus(); // Initialize cloud sync UI
+  renderFooter(); // Show DB name and mode
+}
+
+// Render footer info
+function renderFooter() {
+  const dbNameEl = document.getElementById('db-name');
+  const appModeEl = document.getElementById('app-mode');
+  const userDataPathEl = document.getElementById('user-data-path');
+
+  if (dbNameEl) {
+    dbNameEl.textContent = dbName;
+  }
+
+  if (appModeEl) {
+    const mode = isTest ? 'test' : (isPackaged ? 'production' : 'development');
+    appModeEl.textContent = mode;
+  }
+
+  // Show user data path
+  if (userDataPathEl && !isTest && window.electronAPI?.userDataPath) {
+    userDataPathEl.textContent = `Path: ${window.electronAPI.userDataPath}`;
+  }
+
+  console.log('Database:', dbName);
+  console.log('isPackaged:', isPackaged);
+  console.log('electronAPI:', window.electronAPI);
 }
 
 function emptyItem() {
@@ -228,6 +254,7 @@ async function submitForm() {
     const priority = firstItem ? firstItem.priority - 1 : 1;
 
     await db.tasks.add({
+      id: crypto.randomUUID(),
       name: taskName,
       priority: priority,
       complete: 0,
