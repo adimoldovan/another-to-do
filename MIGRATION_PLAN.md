@@ -1,7 +1,7 @@
 # Migration Plan: v1 → v2.0
 
 ## Status
-**Current Milestone:** Milestone 2 Complete (tests deferred to M4) ✓
+**Current Milestone:** Milestone 3 Complete ✓
 **Last Updated:** 2025-11-08
 
 ## Configuration
@@ -13,7 +13,7 @@
 ## Progress Overview
 - [x] Milestone 1: Dependency Upgrades
 - [x] Milestone 2: Playwright E2E Testing (infrastructure ready, tests deferred to M4)
-- [ ] Milestone 3: Add Linting
+- [x] Milestone 3: Add Linting
 - [ ] Milestone 4: Vanilla JS Conversion
 - [ ] Milestone 5: Expand E2E Test Coverage
 - [ ] Milestone 6: UI Improvements (Minimalist Design)
@@ -155,9 +155,17 @@ git push origin master
 
 ---
 
-### **MILESTONE 3: Add Linting**
-**Status:** Not started
+### **MILESTONE 3: Add Linting** ✓
+**Status:** Complete
 **Goal:** Add ESLint without breaking anything
+
+**Completed Work:**
+- ✅ ESLint installed with @eslint/js
+- ✅ Created eslint.config.js (flat config format)
+- ✅ Configured for ES2022 + ES modules
+- ✅ Added npm scripts: `lint` and `lint:fix`
+- ✅ Fixed 2 linting issues (unused import, require → spawn)
+- ✅ All files pass linting with no errors
 
 #### Implementation Steps
 1. Install ESLint: `npm install -D eslint`
