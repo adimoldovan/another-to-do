@@ -22,8 +22,8 @@ const createWindow = () => {
   // and load the index.html of the app.
   mainWindow.loadFile("public/index.html");
 
-  // Open the DevTools.
-  if(isDev) {
+  // Open the DevTools in development (but not in test mode)
+  if(isDev && process.env.NODE_ENV !== 'test') {
     mainWindow.webContents.openDevTools()
   }
 
