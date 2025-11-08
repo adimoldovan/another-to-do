@@ -45,15 +45,23 @@ This app uses a **client-only** Dexie Cloud setup:
 
 ### Development
 
-```bash
-npm start  # Runs in local-only mode
-```
+**Option 1: Use Environment Variable (Recommended for dev)**
+1. Create `.env.development` with your dev database URL:
+   ```
+   VITE_DEXIE_CLOUD_URL=https://YOUR_DEV_DB_ID.dexie.cloud
+   ```
+2. Run `npm start`
+3. Cloud sync will be enabled automatically
+4. Click "Sign in" to test authentication
 
-To test cloud sync during development:
-1. Run the app
-2. Click "Setup Sync"
+**Option 2: Runtime Configuration**
+1. Run `npm start` without env variable
+2. Click "Setup Sync" in the app
 3. Enter your dev database URL
 4. Test sign-in and sync features
+
+**Testing Mode**
+E2E tests run in local-only mode (`.env.test` has no URL set)
 
 ## User Experience
 

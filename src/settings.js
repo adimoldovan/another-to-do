@@ -39,10 +39,18 @@ export function saveSettings(settings) {
 
 /**
  * Get Dexie Cloud URL from settings
+ * Falls back to environment variable if not set in localStorage
  */
 export function getDexieCloudUrl() {
   const settings = loadSettings();
-  return settings.dexieCloudUrl || '';
+
+  // First check localStorage (user-configured)
+  if (settings.dexieCloudUrl) {
+    return settings.dexieCloudUrl;
+  }
+
+  // Fall back to environment variable (for dev/testing)
+  return import.meta.env.VITE_DEXIE_CLOUD_URL || '';
 }
 
 /**
