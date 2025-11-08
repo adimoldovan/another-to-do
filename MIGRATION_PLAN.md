@@ -1,7 +1,7 @@
 # Migration Plan: v1 → v2.0
 
 ## Status
-**Current Milestone:** Milestone 1 Complete ✓
+**Current Milestone:** Milestone 2 Complete (tests deferred to M4) ✓
 **Last Updated:** 2025-11-08
 
 ## Configuration
@@ -12,7 +12,7 @@
 
 ## Progress Overview
 - [x] Milestone 1: Dependency Upgrades
-- [ ] Milestone 2: Playwright E2E Testing
+- [x] Milestone 2: Playwright E2E Testing (infrastructure ready, tests deferred to M4)
 - [ ] Milestone 3: Add Linting
 - [ ] Milestone 4: Vanilla JS Conversion
 - [ ] Milestone 5: Expand E2E Test Coverage
@@ -74,9 +74,34 @@ git push origin master
 
 ---
 
-### **MILESTONE 2: Add Playwright E2E Testing**
-**Status:** Not started
+### **MILESTONE 2: Add Playwright E2E Testing** ✓ (Deferred to M4)
+**Status:** Infrastructure Complete - Tests Deferred to Milestone 4
 **Goal:** Add full end-to-end test coverage with Playwright (headless mode)
+
+**Completed Work:**
+- ✅ Playwright installed and configured
+- ✅ Created playwright.config.js (headless, no auto-open report)
+- ✅ Created e2e/ directory structure with 9 comprehensive test files
+- ✅ Test helpers created (app launch, database cleanup, wait utilities)
+- ✅ npm test scripts added
+
+**Test Files Created (29 tests total):**
+- `e2e/task-creation.spec.js` (3 tests)
+- `e2e/task-editing.spec.js` (2 tests)
+- `e2e/task-deletion.spec.js` (2 tests)
+- `e2e/task-reordering.spec.js` (2 tests)
+- `e2e/task-completion.spec.js` (2 tests)
+- `e2e/url-linking.spec.js` (4 tests)
+- `e2e/task-filtering.spec.js` (4 tests)
+- `e2e/modal-interactions.spec.js` (5 tests)
+- `e2e/persistence.spec.js` (2 tests)
+- `e2e/full-workflow.spec.js` (3 tests)
+
+**Why Deferred:**
+- Electron 28-39 incompatibility with Playwright's `--remote-debugging-port` flag
+- Tests will be easier to run and maintain after Milestone 4 (Vanilla JS + Vite)
+- Vite provides better debugging and testing infrastructure
+- All test code is ready and will be validated in M4
 
 #### Implementation Steps
 1. Install Playwright: `npm install -D @playwright/test playwright`

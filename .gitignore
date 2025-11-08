@@ -123,4 +123,8 @@ build/
 .idea/
 *.iml
 
+# Playwright
+test-results/
+playwright-report/
+
 
