@@ -7,15 +7,16 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Live Reload
-if(isDev) {
-  import('electron-reload').then(module => {
-    module(__dirname, {
-      electron: path.join(__dirname, "node_modules", ".bin", "electron"),
-      awaitWriteFinish: true,
-    });
-  }).catch(err => console.log(err));
-}
+// Live Reload (disabled - incompatible with Electron 39+, will be replaced with Vite in Milestone 4)
+// if(isDev) {
+//   import('electron-reload').then(module => {
+//     const electronReload = module.default || module;
+//     electronReload(__dirname, {
+//       electron: path.join(__dirname, "node_modules", ".bin", "electron"),
+//       awaitWriteFinish: true,
+//     });
+//   }).catch(err => console.log(err));
+// }
 
 const createWindow = () => {
   // Create the browser window.

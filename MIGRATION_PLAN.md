@@ -1,7 +1,7 @@
 # Migration Plan: v1 → v2.0
 
 ## Status
-**Current Milestone:** Not started
+**Current Milestone:** Milestone 1 Complete ✓
 **Last Updated:** 2025-11-08
 
 ## Configuration
@@ -11,7 +11,7 @@
 - **Playwright Tests:** Headless mode
 
 ## Progress Overview
-- [ ] Milestone 1: Dependency Upgrades
+- [x] Milestone 1: Dependency Upgrades
 - [ ] Milestone 2: Playwright E2E Testing
 - [ ] Milestone 3: Add Linting
 - [ ] Milestone 4: Vanilla JS Conversion
@@ -26,9 +26,24 @@
 
 ## Detailed Milestones
 
-### **MILESTONE 1: Dependency Upgrades**
-**Status:** Not started
+### **MILESTONE 1: Dependency Upgrades** ✓
+**Status:** Complete
 **Goal:** Upgrade all dependencies while keeping Svelte app working
+
+**Completed Upgrades:**
+- Electron: 28.1.4 → 39.1.1
+- date-fns: 3.3.1 → 4.1.0
+- Dexie: 3.2.4 → 4.2.1
+- @electron-forge/*: 7.2.0 → 7.10.2
+- @rollup/plugin-commonjs: 25.0.7 → 29.0.0
+- @rollup/plugin-node-resolve: 15.2.3 → 16.0.3
+- rollup-plugin-css-only: 3.1.0 → 4.5.5
+- rollup-plugin-svelte: 7.1.6 → 7.2.3
+
+**Notes:**
+- Disabled electron-reload (incompatible with Electron 39+ and ES modules)
+- Will be replaced with Vite HMR in Milestone 4
+- All tests passed, app stable
 
 #### Implementation Steps
 1. Upgrade Electron 28 → latest (31+)
