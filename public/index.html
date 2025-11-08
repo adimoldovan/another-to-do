@@ -6,12 +6,32 @@
 
     <title>Another To Do</title>
 
-    <link rel="icon" type="image/png" href="./favicon.ico" />
+    <link rel="icon" type="image/png" href="./favicon.png" />
     <link rel="stylesheet" href="./global.css" />
-    <link rel="stylesheet" href="./build/bundle.css" />
-
-    <script defer src="./build/bundle.js"></script>
   </head>
 
-  <body></body>
+  <body>
+    <main>
+      <h1 class="today"></h1>
+      <div class="items" role="list">
+        <div class="top-actions">
+          <a href="#" class="btn action-btn add-btn">&oplus;</a>
+        </div>
+      </div>
+      <small><a href="#" class="filter-toggle">show completed items</a></small><br/>
+      <small class="count"></small>
+
+      <div id="form-container" role="dialog" style="display: none;">
+        <div class="modal-content">
+          <span role="button" class="close" tabindex="0">&times;</span>
+          <form id="task-form">
+            <textarea id="task-input" placeholder="buy milk"></textarea>
+            <a href="#" class="btn action-btn save-btn">&darr;</a>
+          </form>
+        </div>
+      </div>
+    </main>
+
+    <script type="module" src="./build/bundle.js"></script>
+  </body>
 </html>

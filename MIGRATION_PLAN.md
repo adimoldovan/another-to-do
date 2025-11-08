@@ -1,7 +1,7 @@
 # Migration Plan: v1 → v2.0
 
 ## Status
-**Current Milestone:** Milestone 3 Complete ✓
+**Current Milestone:** Milestone 4 Complete ✓
 **Last Updated:** 2025-11-08
 
 ## Configuration
@@ -14,7 +14,7 @@
 - [x] Milestone 1: Dependency Upgrades
 - [x] Milestone 2: Playwright E2E Testing (infrastructure ready, tests deferred to M4)
 - [x] Milestone 3: Add Linting
-- [ ] Milestone 4: Vanilla JS Conversion
+- [x] Milestone 4: Vanilla JS Conversion
 - [ ] Milestone 5: Expand E2E Test Coverage
 - [ ] Milestone 6: UI Improvements (Minimalist Design)
 - [ ] Milestone 7: Add Dexie Cloud
