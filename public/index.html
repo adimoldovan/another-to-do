@@ -12,7 +12,10 @@
 
   <body>
     <main>
-      <h1 class="today"></h1>
+      <div class="header-row">
+        <h1 class="today"></h1>
+        <div class="sync-controls" id="sync-controls"></div>
+      </div>
       <div class="items" role="list">
         <div class="top-actions">
           <a href="#" class="btn action-btn add-btn">&oplus;</a>
@@ -27,6 +30,32 @@
           <form id="task-form">
             <textarea id="task-input" placeholder="buy milk"></textarea>
             <a href="#" class="btn action-btn save-btn">&darr;</a>
+          </form>
+        </div>
+      </div>
+
+      <div id="settings-modal" role="dialog" style="display: none;">
+        <div class="modal-content settings-modal-content">
+          <span role="button" class="close close-settings" tabindex="0">&times;</span>
+          <h2>Cloud Sync Settings</h2>
+          <form id="settings-form">
+            <div class="settings-section">
+              <label for="dexie-cloud-url">Dexie Cloud Database URL</label>
+              <input
+                type="text"
+                id="dexie-cloud-url"
+                placeholder="https://YOUR_DB_ID.dexie.cloud"
+                autocomplete="off"
+              />
+              <small class="help-text">
+                Leave empty to use local-only mode.<br/>
+                To enable sync: <a href="https://dexie.cloud" target="_blank">Create a free Dexie Cloud database</a>
+              </small>
+            </div>
+            <div class="settings-actions">
+              <button type="submit" class="btn-primary">Save</button>
+              <button type="button" class="btn-secondary" id="cancel-settings">Cancel</button>
+            </div>
           </form>
         </div>
       </div>

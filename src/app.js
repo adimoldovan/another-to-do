@@ -1,8 +1,10 @@
 import { format } from 'date-fns';
-import { db } from './db.js';
+import { db, configureCloudSync } from './db.js';
 import { liveQuery } from 'dexie';
 import { detectAndLinkUrls, getUrlHost } from './utils/urlDetector.js';
 import { setupDragHandlers } from './utils/dragDrop.js';
+import { initSyncStatus } from './components/syncStatus.js';
+import { loadSettings, setDexieCloudUrl } from './settings.js';
 
 // State
 const state = {
@@ -20,6 +22,7 @@ function init() {
   subscribeToTasks();
   subscribeToTaskCount();
   renderDate();
+  initSyncStatus(); // Initialize cloud sync UI
 }
 
 function emptyItem() {
@@ -174,7 +177,24 @@ function setupEventListeners() {
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeModal();
+      closeSettingsModal();
     }
+  });
+
+  // Settings modal event listeners
+  window.addEventListener('show-settings', showSettingsModal);
+
+  document.querySelector('.close-settings')?.addEventListener('click', () => {
+    closeSettingsModal();
+  });
+
+  document.querySelector('#cancel-settings')?.addEventListener('click', () => {
+    closeSettingsModal();
+  });
+
+  document.querySelector('#settings-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveSettingsForm();
   });
 }
 
@@ -252,6 +272,60 @@ function closeModal() {
   if (modal) {
     modal.style.display = 'none';
     state.currentItem = emptyItem();
+  }
+}
+
+// Settings Modal
+function showSettingsModal() {
+  const modal = document.getElementById('settings-modal');
+  const input = document.querySelector('#dexie-cloud-url');
+
+  if (modal && input) {
+    // Load current settings
+    const settings = loadSettings();
+    input.value = settings.dexieCloudUrl || '';
+    modal.style.display = 'block';
+    input.focus();
+  }
+}
+
+function closeSettingsModal() {
+  const modal = document.getElementById('settings-modal');
+  if (modal) {
+    modal.style.display = 'none';
+  }
+}
+
+function saveSettingsForm() {
+  const input = document.querySelector('#dexie-cloud-url');
+  const url = input.value.trim();
+
+  // Validate URL if provided
+  if (url && !isValidDexieCloudUrl(url)) {
+    alert('Invalid Dexie Cloud URL. Format: https://YOUR_DB_ID.dexie.cloud');
+    return;
+  }
+
+  // Save settings
+  setDexieCloudUrl(url);
+
+  // Reconfigure cloud sync
+  configureCloudSync();
+
+  // Close modal
+  closeSettingsModal();
+
+  // Reload page to apply changes
+  alert('Settings saved! Reloading app to apply changes...');
+  window.location.reload();
+}
+
+function isValidDexieCloudUrl(url) {
+  try {
+    const urlObj = new URL(url);
+    return urlObj.protocol === 'https:' && urlObj.hostname.endsWith('.dexie.cloud');
+  } catch {
+    return false;
   }
 }
 

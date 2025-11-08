@@ -37,6 +37,7 @@
   "dependencies": {
     "date-fns": "^4.1.0",
     "dexie": "^4.2.1",
+    "dexie-cloud-addon": "^4.2.2",
     "electron-is-dev": "^3.0.1",
     "electron-reload": "^2.0.0-alpha.1",
     "electron-squirrel-startup": "^1.0.0",

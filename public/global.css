@@ -59,14 +59,22 @@ main {
   margin: 0 auto;
 }
 
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  padding: 0 10px;
+}
+
 h1.today {
-  margin-top: 0;
+  margin: 0;
   text-align: center;
   color: var(--fg-color);
   text-transform: uppercase;
   font-size: 2.5rem;
   font-weight: 200;
-  border-bottom: 1px solid var(--border-color);
+  flex: 1;
 }
 
 .items {
@@ -212,4 +220,174 @@ a.task-url {
 a.task-url:hover {
   text-decoration: none;
   background-color: #000;
+}
+
+/* Sync Controls */
+.sync-controls {
+  min-width: 200px;
+  text-align: right;
+}
+
+.sync-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.sync-indicator {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.sync-synced {
+  color: var(--green);
+}
+
+.sync-syncing {
+  color: var(--yellow);
+  animation: pulse 1s infinite;
+}
+
+.sync-offline {
+  color: var(--fg-color);
+  opacity: 0.5;
+}
+
+.sync-error {
+  color: var(--red);
+}
+
+.local-mode-indicator {
+  color: var(--fg-color);
+  opacity: 0.7;
+}
+
+.user-email {
+  color: var(--fg-color);
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.sync-btn {
+  background-color: var(--bg-color-secondary);
+  color: var(--fg-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sync-btn:hover {
+  background-color: var(--border-color);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Settings Modal */
+#settings-modal {
+  display: none;
+  position: fixed;
+  z-index: 2;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: var(--bg-color);
+}
+
+.settings-modal-content {
+  padding: 40px;
+  margin: auto;
+  max-width: 600px;
+  margin-top: 10vh;
+}
+
+.settings-modal-content h2 {
+  color: var(--fg-color);
+  margin-top: 0;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.settings-section {
+  margin-bottom: 30px;
+}
+
+.settings-section label {
+  display: block;
+  color: var(--fg-color);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.settings-section input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg-color-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--fg-color);
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.settings-section input[type="text"]:focus {
+  outline: none;
+  border-color: var(--link-color);
+}
+
+.help-text {
+  display: block;
+  margin-top: 8px;
+  color: var(--fg-color);
+  opacity: 0.7;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.help-text a {
+  color: var(--link-color);
+}
+
+.settings-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 10px 24px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.btn-primary {
+  background-color: var(--link-color);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #4a8dd6;
+}
+
+.btn-secondary {
+  background-color: var(--bg-color-secondary);
+  color: var(--fg-color);
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
 }
