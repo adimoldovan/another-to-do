@@ -39,7 +39,7 @@ const createWindow = () => {
   if (isDev) {
     mainWindow.loadURL('http://localhost:8081');
   } else {
-    mainWindow.loadFile("public/index.html");
+    mainWindow.loadFile("public/build/index.html");
   }
 
   // Open the DevTools in development (but not in test mode)

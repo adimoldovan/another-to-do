@@ -45,8 +45,8 @@ function renderSyncControls() {
 
     if (!cloudConfigured) {
       syncStatusHtml = `<span class="local-mode-indicator" title="Local-only mode">Local only</span>`;
-    } else if (currentUser && syncState.phase !== 'error') {
-      // Show sync status only when actively syncing
+    } else if (cloudConfigured && currentUser && syncState.phase !== 'error') {
+      // Show sync status only when cloud is configured AND user is signed in
       const statusClass = getSyncStatusClass();
       const statusIcon = getSyncStatusIcon();
       const statusText = getSyncStatusText();
