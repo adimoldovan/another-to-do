@@ -43,16 +43,17 @@ function renderSyncControls() {
   if (footerContainer) {
     let syncStatusHtml = '';
 
+    // Always check cloudConfigured first - if not configured, always show "Local only"
     if (!cloudConfigured) {
       syncStatusHtml = `<span class="local-mode-indicator" title="Local-only mode">Local only</span>`;
-    } else if (cloudConfigured && currentUser && syncState.phase !== 'error') {
-      // Show sync status only when cloud is configured AND user is signed in
+    } else if (currentUser && syncState.phase !== 'error') {
+      // Cloud is configured AND user is signed in
       const statusClass = getSyncStatusClass();
       const statusIcon = getSyncStatusIcon();
       const statusText = getSyncStatusText();
       syncStatusHtml = `<span class="sync-indicator ${statusClass}" title="${statusText}">${statusIcon}</span> ${currentUser.email || 'Signed in'}`;
     } else {
-      // Default to local only for all other cases (not configured, error, etc.)
+      // Cloud configured but not signed in, or error state
       syncStatusHtml = `<span class="local-mode-indicator" title="Local-only mode">Local only</span>`;
     }
 
