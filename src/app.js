@@ -86,8 +86,16 @@ function renderDate() {
 }
 
 // Database subscriptions
+let tasksSubscription = null;
+
 function subscribeToTasks() {
-  liveQuery(async () => {
+  // Unsubscribe from previous subscription if exists
+  if (tasksSubscription) {
+    tasksSubscription.unsubscribe();
+  }
+
+  // Create new subscription with current filter
+  tasksSubscription = liveQuery(async () => {
     let tasks = await db.tasks
       .where('complete')
       .equals(state.complete)
@@ -195,6 +203,7 @@ function setupEventListeners() {
     e.preventDefault();
     state.complete = state.complete === 0 ? 1 : 0;
     updateFilterText();
+    subscribeToTasks(); // Re-subscribe with new filter
   });
 
   // Modal close
