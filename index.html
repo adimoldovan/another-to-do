@@ -18,7 +18,12 @@
       </div>
       <div class="items" role="list">
         <div class="top-actions">
-          <a href="#" class="btn action-btn add-btn">&oplus;</a>
+          <a href="#" class="btn action-btn add-btn" title="Add new task">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="10" y1="4" x2="10" y2="16"></line>
+              <line x1="4" y1="10" x2="16" y2="10"></line>
+            </svg>
+          </a>
         </div>
       </div>
       <small><a href="#" class="filter-toggle">show completed items</a></small><br/>
@@ -26,9 +31,7 @@
 
       <footer>
         <div id="sync-status-footer"></div>
-        <div>DB: <span id="db-name"></span></div>
-        <div>Mode: <span id="app-mode"></span></div>
-        <div id="user-data-path" style="word-break: break-all;"></div>
+        <div id="footer-info"></div>
       </footer>
 
       <div id="form-container" role="dialog" style="display: none;">
@@ -36,7 +39,11 @@
           <span role="button" class="close" tabindex="0">&times;</span>
           <form id="task-form">
             <textarea id="task-input" placeholder="buy milk"></textarea>
-            <a href="#" class="btn action-btn save-btn">&darr;</a>
+            <a href="#" class="btn action-btn save-btn" title="Save task">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20,6 9,17 4,12"></polyline>
+              </svg>
+            </a>
           </form>
         </div>
       </div>
@@ -46,36 +53,46 @@
           <span role="button" class="close close-settings" tabindex="0">&times;</span>
           <h2>Settings</h2>
           <form id="settings-form">
-            <div class="settings-section">
-              <label>Theme</label>
-              <div class="theme-selector">
-                <button type="button" class="theme-option" data-theme="light">
-                  <span class="theme-option-icon">☀️</span>
-                  <span class="theme-option-label">Light</span>
-                </button>
-                <button type="button" class="theme-option" data-theme="dark">
-                  <span class="theme-option-icon">🌙</span>
-                  <span class="theme-option-label">Dark</span>
-                </button>
+            <div class="settings-grid">
+              <div class="settings-group">
+                <h3 class="settings-group-title">Appearance</h3>
+                <div class="settings-row">
+                  <label class="settings-row-label">Theme</label>
+                  <div class="theme-selector">
+                    <button type="button" class="theme-option" data-theme="light">
+                      <span class="theme-option-icon">☀️</span>
+                      <span class="theme-option-label">Light</span>
+                    </button>
+                    <button type="button" class="theme-option" data-theme="dark">
+                      <span class="theme-option-icon">🌙</span>
+                      <span class="theme-option-label">Dark</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="settings-group">
+                <h3 class="settings-group-title">Cloud Sync</h3>
+                <div class="settings-row">
+                  <label for="dexie-cloud-url" class="settings-row-label">Database URL</label>
+                  <div class="settings-row-input">
+                    <input
+                      type="text"
+                      id="dexie-cloud-url"
+                      placeholder="https://YOUR_DB_ID.dexie.cloud"
+                      autocomplete="off"
+                    />
+                    <small class="help-text">
+                      Leave empty for local-only mode. <a href="https://dexie.cloud" target="_blank">Get a free database</a>
+                    </small>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div class="settings-section">
-              <label for="dexie-cloud-url">Cloud Sync Database URL</label>
-              <input
-                type="text"
-                id="dexie-cloud-url"
-                placeholder="https://YOUR_DB_ID.dexie.cloud"
-                autocomplete="off"
-              />
-              <small class="help-text">
-                Leave empty to use local-only mode.<br/>
-                To enable sync: <a href="https://dexie.cloud" target="_blank">Create a free Dexie Cloud database</a>
-              </small>
-            </div>
             <div class="settings-actions">
-              <button type="submit" class="btn-primary">Save</button>
               <button type="button" class="btn-secondary" id="cancel-settings">Cancel</button>
+              <button type="submit" class="btn-primary">Save Changes</button>
             </div>
           </form>
         </div>

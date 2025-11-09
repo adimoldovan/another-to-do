@@ -36,33 +36,34 @@ function renderSyncControls() {
 
   const cloudConfigured = isCloudConfigured();
 
-  // Always show just a settings button in header
-  headerContainer.innerHTML = `
-    <button class="sync-btn settings-btn" id="settings-btn" aria-label="Settings">⚙</button>
-  `;
-  document.getElementById('settings-btn')?.addEventListener('click', showSettingsModal);
+  // Header is now empty - no button needed
+  headerContainer.innerHTML = '';
 
-  // Show status in footer
+  // Show status in footer with settings link
   if (footerContainer) {
+    let syncStatusHtml = '';
+
     if (!cloudConfigured) {
-      footerContainer.innerHTML = `
-        <div>Sync: <span class="local-mode-indicator" title="Local-only mode">Local only</span></div>
-      `;
+      syncStatusHtml = `<span class="local-mode-indicator" title="Local-only mode">Local only</span>`;
     } else if (currentUser && syncState.phase !== 'error') {
       // Show sync status only when actively syncing
       const statusClass = getSyncStatusClass();
       const statusIcon = getSyncStatusIcon();
       const statusText = getSyncStatusText();
-
-      footerContainer.innerHTML = `
-        <div>Sync: <span class="sync-indicator ${statusClass}" title="${statusText}">${statusIcon}</span> ${currentUser.email || 'Signed in'}</div>
-      `;
+      syncStatusHtml = `<span class="sync-indicator ${statusClass}" title="${statusText}">${statusIcon}</span> ${currentUser.email || 'Signed in'}`;
     } else {
       // Default to local only for all other cases (not configured, error, etc.)
-      footerContainer.innerHTML = `
-        <div>Sync: <span class="local-mode-indicator" title="Local-only mode">Local only</span></div>
-      `;
+      syncStatusHtml = `<span class="local-mode-indicator" title="Local-only mode">Local only</span>`;
     }
+
+    footerContainer.innerHTML = `
+      <div>Sync: ${syncStatusHtml} · <a href="#" class="settings-link" id="settings-link">Settings</a></div>
+    `;
+
+    document.getElementById('settings-link')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      showSettingsModal();
+    });
   }
 }
 

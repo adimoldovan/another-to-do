@@ -43,22 +43,18 @@ function init() {
 
 // Render footer info
 function renderFooter() {
-  const dbNameEl = document.getElementById('db-name');
-  const appModeEl = document.getElementById('app-mode');
-  const userDataPathEl = document.getElementById('user-data-path');
+  const footerInfoEl = document.getElementById('footer-info');
 
-  if (dbNameEl) {
-    dbNameEl.textContent = dbName;
-  }
-
-  if (appModeEl) {
+  if (footerInfoEl) {
     const mode = isTest ? 'test' : (isPackaged ? 'production' : 'development');
-    appModeEl.textContent = mode;
-  }
+    const parts = [`DB: ${dbName}`, `Mode: ${mode}`];
 
-  // Show user data path
-  if (userDataPathEl && !isTest && window.electronAPI?.userDataPath) {
-    userDataPathEl.textContent = `Path: ${window.electronAPI.userDataPath}`;
+    // Add path if available
+    if (!isTest && window.electronAPI?.userDataPath) {
+      parts.push(`Path: ${window.electronAPI.userDataPath}`);
+    }
+
+    footerInfoEl.textContent = parts.join(' · ');
   }
 
   console.log('Database:', dbName);
@@ -157,8 +153,17 @@ function createTaskElement(task, index) {
         </div>
       </div>
       <div class="item-actions">
-        <a href="#" class="btn action-btn done-btn">&check;</a>
-        <a href="#" class="btn action-btn delete-btn">&cross;</a>
+        <a href="#" class="btn action-btn done-btn" title="${task.complete ? 'Restore task' : 'Mark as complete'}">
+          ${task.complete
+            ? '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2,8 A6,6 0 1,1 8,14"></path><polyline points="2,4 2,8 6,8"></polyline></svg>'
+            : '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3,8 6,11 13,4"></polyline></svg>'
+          }
+        </a>
+        <a href="#" class="btn action-btn delete-btn" title="Delete task">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3,3 L13,13 M13,3 L3,13"></path>
+          </svg>
+        </a>
       </div>
     </div>
   `;
