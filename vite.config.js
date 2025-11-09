@@ -1,13 +1,15 @@
 import { defineConfig } from 'vite';
+import path from 'path';
 
 export default defineConfig({
-  root: 'src',
   base: './',
   build: {
-    outDir: '../public/build',
+    outDir: 'public/build',
     emptyOutDir: true,
     rollupOptions: {
-      input: 'src/app.js',
+      input: {
+        main: path.resolve(__dirname, 'index.html')
+      },
       output: {
         entryFileNames: 'bundle.js',
         assetFileNames: 'bundle.[ext]',
@@ -15,6 +17,7 @@ export default defineConfig({
     },
   },
   server: {
-    port: 8080,
+    port: 8081,
   },
+  publicDir: 'public',
 });

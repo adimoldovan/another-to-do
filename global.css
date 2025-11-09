@@ -1,7 +1,15 @@
 :root {
-  /* Minimalist Color Palette - Neutral grays with subtle blue accent */
+  /* Spacing scale */
   --spacing-base: 8px;
 
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.2s ease;
+}
+
+/* Light Theme (default) */
+:root,
+[data-theme="light"] {
   /* Background colors */
   --bg-primary: #fafbfc;
   --bg-secondary: #ffffff;
@@ -20,18 +28,46 @@
   --accent-primary: #0969da;
   --accent-hover: #0860ca;
 
-  /* Status colors - subtle and muted */
+  /* Status colors */
   --success: #1a7f37;
   --warning: #9a6700;
   --error: #cf222e;
 
-  /* Shadows - very subtle */
+  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.06);
+  --modal-backdrop: rgba(0, 0, 0, 0.5);
+}
 
-  /* Transitions */
-  --transition-fast: 0.15s ease;
-  --transition-normal: 0.2s ease;
+/* Dark Theme */
+[data-theme="dark"] {
+  /* Background colors */
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-hover: #1c2128;
+
+  /* Text colors */
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --text-tertiary: #6e7681;
+
+  /* Border colors */
+  --border-light: #30363d;
+  --border-medium: #484f58;
+
+  /* Accent color - brighter blue for dark mode */
+  --accent-primary: #539bf5;
+  --accent-hover: #6cb6ff;
+
+  /* Status colors - adjusted for dark mode */
+  --success: #3fb950;
+  --warning: #d29922;
+  --error: #f85149;
+
+  /* Shadows - more pronounced in dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.4);
+  --modal-backdrop: rgba(0, 0, 0, 0.7);
 }
 
 html,
@@ -168,7 +204,7 @@ h1.today {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--modal-backdrop);
   animation: fadeIn var(--transition-normal);
 }
 
@@ -394,7 +430,7 @@ a.task-url:hover {
   width: 100%;
   height: 100%;
   overflow: auto;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--modal-backdrop);
   animation: fadeIn var(--transition-normal);
 }
 
@@ -549,4 +585,46 @@ small a {
 /* Count display */
 .count {
   color: var(--text-tertiary);
+}
+
+/* Theme Selector in Settings Modal */
+.theme-selector {
+  display: flex;
+  gap: calc(var(--spacing-base) * 1.5);
+  margin-top: calc(var(--spacing-base));
+}
+
+.theme-option {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: calc(var(--spacing-base));
+  padding: calc(var(--spacing-base) * 2);
+  background: var(--bg-primary);
+  border: 2px solid var(--border-light);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.theme-option:hover {
+  border-color: var(--border-medium);
+  background-color: var(--bg-hover);
+}
+
+.theme-option.active {
+  border-color: var(--accent-primary);
+  background-color: var(--bg-hover);
+  box-shadow: 0 0 0 2px var(--accent-primary) inset;
+}
+
+.theme-option-icon {
+  font-size: 2rem;
+}
+
+.theme-option-label {
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  font-weight: 500;
 }

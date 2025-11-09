@@ -35,8 +35,12 @@ const createWindow = () => {
     },
   });
 
-  // and load the index.html of the app.
-  mainWindow.loadFile("public/index.html");
+  // Load from Vite dev server in development, or file in production
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:8081');
+  } else {
+    mainWindow.loadFile("public/index.html");
+  }
 
   // Open the DevTools in development (but not in test mode)
   if(isDev && process.env.NODE_ENV !== 'test') {

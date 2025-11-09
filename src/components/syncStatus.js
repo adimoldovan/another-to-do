@@ -29,52 +29,34 @@ export function initSyncStatus() {
 }
 
 function renderSyncControls() {
-  const container = document.getElementById('sync-controls');
-  if (!container) return;
+  const headerContainer = document.getElementById('sync-controls');
+  const footerContainer = document.getElementById('sync-status-footer');
+
+  if (!headerContainer) return;
 
   const cloudConfigured = isCloudConfigured();
 
-  if (!cloudConfigured) {
-    // Cloud not configured - show setup button
-    container.innerHTML = `
-      <div class="sync-status">
-        <span class="local-mode-indicator" title="Local-only mode">
-          ⊙ Local
-        </span>
-        <button class="sync-btn setup-btn" id="setup-cloud-btn">Setup Sync</button>
-      </div>
-    `;
+  // Always show just a settings button in header
+  headerContainer.innerHTML = `
+    <button class="sync-btn settings-btn" id="settings-btn" aria-label="Settings">⚙</button>
+  `;
+  document.getElementById('settings-btn')?.addEventListener('click', showSettingsModal);
 
-    document.getElementById('setup-cloud-btn')?.addEventListener('click', showSettingsModal);
-  } else if (currentUser) {
-    // Cloud configured and user is logged in
-    container.innerHTML = `
-      <div class="sync-status">
-        <span class="sync-indicator ${getSyncStatusClass()}" title="${getSyncStatusText()}">
-          ${getSyncStatusIcon()}
-        </span>
-        <span class="user-email">${currentUser.email || 'Signed in'}</span>
-        <button class="sync-btn settings-btn" id="settings-btn">⚙</button>
-        <button class="sync-btn logout-btn" id="logout-btn">Sign out</button>
-      </div>
-    `;
-
-    document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
-    document.getElementById('settings-btn')?.addEventListener('click', showSettingsModal);
-  } else {
-    // Cloud configured but user is not logged in
-    container.innerHTML = `
-      <div class="sync-status">
-        <span class="local-mode-indicator" title="Offline mode - Sign in to sync across devices">
-          ⊙ Local
-        </span>
-        <button class="sync-btn login-btn" id="login-btn">Sign in</button>
-        <button class="sync-btn settings-btn" id="settings-btn">⚙</button>
-      </div>
-    `;
-
-    document.getElementById('login-btn')?.addEventListener('click', handleLogin);
-    document.getElementById('settings-btn')?.addEventListener('click', showSettingsModal);
+  // Show status in footer
+  if (footerContainer) {
+    if (!cloudConfigured) {
+      footerContainer.innerHTML = `
+        <div>Sync: <span class="local-mode-indicator" title="Local-only mode">Local only</span></div>
+      `;
+    } else if (currentUser) {
+      footerContainer.innerHTML = `
+        <div>Sync: <span class="sync-indicator ${getSyncStatusClass()}" title="${getSyncStatusText()}">${getSyncStatusIcon()}</span> ${currentUser.email || 'Signed in'}</div>
+      `;
+    } else {
+      footerContainer.innerHTML = `
+        <div>Sync: <span class="local-mode-indicator" title="Cloud configured but not signed in">Offline</span></div>
+      `;
+    }
   }
 }
 

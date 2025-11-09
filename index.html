@@ -6,8 +6,8 @@
 
     <title>Another To Do</title>
 
-    <link rel="icon" type="image/png" href="./favicon.png" />
-    <link rel="stylesheet" href="./global.css" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="stylesheet" href="/global.css" />
   </head>
 
   <body>
@@ -25,6 +25,7 @@
       <small class="count"></small>
 
       <footer>
+        <div id="sync-status-footer"></div>
         <div>DB: <span id="db-name"></span></div>
         <div>Mode: <span id="app-mode"></span></div>
         <div id="user-data-path" style="word-break: break-all;"></div>
@@ -43,10 +44,24 @@
       <div id="settings-modal" role="dialog" style="display: none;">
         <div class="modal-content settings-modal-content">
           <span role="button" class="close close-settings" tabindex="0">&times;</span>
-          <h2>Cloud Sync Settings</h2>
+          <h2>Settings</h2>
           <form id="settings-form">
             <div class="settings-section">
-              <label for="dexie-cloud-url">Dexie Cloud Database URL</label>
+              <label>Theme</label>
+              <div class="theme-selector">
+                <button type="button" class="theme-option" data-theme="light">
+                  <span class="theme-option-icon">☀️</span>
+                  <span class="theme-option-label">Light</span>
+                </button>
+                <button type="button" class="theme-option" data-theme="dark">
+                  <span class="theme-option-icon">🌙</span>
+                  <span class="theme-option-label">Dark</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-section">
+              <label for="dexie-cloud-url">Cloud Sync Database URL</label>
               <input
                 type="text"
                 id="dexie-cloud-url"
@@ -67,6 +82,6 @@
       </div>
     </main>
 
-    <script type="module" src="./build/bundle.js"></script>
+    <script type="module" src="/src/app.js"></script>
   </body>
 </html>

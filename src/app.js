@@ -13,11 +13,26 @@ const state = {
   currentItem: emptyItem(),
   tasks: [],
   totalCount: 0,
+  theme: 'light', // default theme
 };
+
+// Theme management
+function initTheme() {
+  // Load theme from localStorage or default to 'light'
+  const savedTheme = localStorage.getItem('theme') || 'light';
+  setTheme(savedTheme);
+}
+
+function setTheme(theme) {
+  state.theme = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('theme', theme);
+}
 
 // Initialize app
 function init() {
   setupDateTimer();
+  initTheme(); // Initialize theme from localStorage
   setupEventListeners();
   subscribeToTasks();
   subscribeToTaskCount();
@@ -311,9 +326,40 @@ function showSettingsModal() {
     // Load current settings
     const settings = loadSettings();
     input.value = settings.dexieCloudUrl || '';
+
+    // Set up theme selector
+    updateThemeOptions();
+    setupThemeSelectors();
+
     modal.style.display = 'block';
     input.focus();
   }
+}
+
+function updateThemeOptions() {
+  // Update active state on theme options
+  document.querySelectorAll('.theme-option').forEach(option => {
+    const theme = option.getAttribute('data-theme');
+    if (theme === state.theme) {
+      option.classList.add('active');
+    } else {
+      option.classList.remove('active');
+    }
+  });
+}
+
+function setupThemeSelectors() {
+  // Remove old listeners and add new ones
+  document.querySelectorAll('.theme-option').forEach(option => {
+    const newOption = option.cloneNode(true);
+    option.parentNode.replaceChild(newOption, option);
+
+    newOption.addEventListener('click', () => {
+      const theme = newOption.getAttribute('data-theme');
+      setTheme(theme);
+      updateThemeOptions();
+    });
+  });
 }
 
 function closeSettingsModal() {
