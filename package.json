@@ -1,7 +1,7 @@
 {
   "name": "another-to-do",
   "type": "module",
-  "version": "2.0.0-alpha",
+  "version": "2.0.0-build-2",
   "description": "ya2d - Yet another to-do app",
   "main": "main.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "publish": "electron-forge publish",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "package": "npm run build && electron-forge package",
+    "package": "node scripts/bump-build.js && npm run build && electron-forge package",
     "make": "npm run build && electron-forge make",
     "release": "npm run build && electron-forge make",
     "test": "playwright test",
@@ -42,38 +42,5 @@
     "electron-reload": "^2.0.0-alpha.1",
     "electron-squirrel-startup": "^1.0.0",
     "sirv-cli": "^2.0.0"
-  },
-  "config": {
-    "forge": {
-      "packagerConfig": {
-        "name": "ya2d",
-        "productName": "ya2d",
-        "executableName": "ya2d",
-        "icon": "assets/mac/icon.icns",
-        "appBundleId": "com.electron.ya2d"
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "ya2d"
-          }
-        },
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin"
-          ]
-        },
-        {
-          "name": "@electron-forge/maker-deb",
-          "config": {}
-        },
-        {
-          "name": "@electron-forge/maker-rpm",
-          "config": {}
-        }
-      ]
-    }
   }
 }
